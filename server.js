@@ -6,9 +6,6 @@ const connectDB = require('./config/database');
 // Charger les variables d'environnement
 dotenv.config();
 
-// Connexion à MongoDB
-connectDB();
-
 // Routes
 const authRoutes = require('./routes/auth');
 const habitsRoutes = require('./routes/habits');
@@ -39,6 +36,17 @@ app.use((req, res) => {
 
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
-  console.log(`Serveur démarré sur le port ${PORT}`);
-});
+const startServer = async () => {
+  try {
+    await connectDB();
+
+    app.listen(PORT, () => {
+      console.log(`Serveur démarré sur le port ${PORT}`);
+    });
+  } catch (error) {
+    console.error(error.message);
+    process.exit(1);
+  }
+};
+
+startServer();
